@@ -1,26 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tp/accueil.dart';
+import 'package:tp/cubit/app_cubit.dart';
 import 'package:tp/main.dart';
+import 'package:tp/page_checked.dart';
+import 'package:tp/services/airportdata.dart';
 
-class MySplash extends StatefulWidget {
-  const MySplash({super.key});
+class ChargingToBuy extends StatefulWidget {
+  const ChargingToBuy({super.key});
 
   @override
-  State<MySplash> createState() => _MySplashState();
+  State<ChargingToBuy> createState() => _ChargingToBuyState();
 }
 
-class _MySplashState extends State<MySplash>
+class _ChargingToBuyState extends State<ChargingToBuy>
     with SingleTickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
 
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
-    // Future.delayed(Duration(seconds: 5), () {
-    //   Navigator.of(context).pushReplacement(
-    //       MaterialPageRoute(builder: (_) => const MyHome()));
-    // });
+    //BlocProvider.of<AppCubit>(context).getBackAccueil();
+     Future.delayed(Duration(seconds: 5), () {
+       Navigator.of(context).pushReplacement(
+           MaterialPageRoute(builder: (_) => const MyBoughtPage()));
+     });
   }
 
   @override
@@ -40,12 +45,10 @@ class _MySplashState extends State<MySplash>
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset('assets/splash.png'),
-            Container(
-              height: 15.0,
-            ),
+            //Image.asset('assets/splash.png'),
+
             Text(
-              "Checking Internet Connection",
+              "Checking places",
               style: TextStyle(color: Colors.grey, fontStyle: FontStyle.italic),
             ),
             Container(

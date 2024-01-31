@@ -1,15 +1,14 @@
 class DataModel{
    String ? nom ;
-   String ? city_code;
-   bool? praticable;
+   String ? code;
 
-   DataModel({this.nom, this.city_code, this.praticable});
+
+   DataModel({this.nom, this.code});
 
   factory DataModel.fromJson(Map<String, dynamic> json){
     return  DataModel(
-      nom: json['nom'],
-      city_code: json['city_code'],
-      praticable: json['flightable'] 
+      nom: json['name_translations']['en'],
+      code: json['code'],
     );
   }
 

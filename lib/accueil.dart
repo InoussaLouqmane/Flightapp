@@ -1,3 +1,4 @@
+import 'package:csc_picker/csc_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -6,24 +7,27 @@ import 'package:tp/SelectOption.dart';
 import 'package:tp/Vol.dart';
 import 'package:tp/cubit/app_cubit.dart';
 import 'package:tp/cubit/app_cubit_states.dart';
+import 'package:tp/widgets/archive_recherche.dart';
 
 class MyAccueil extends StatefulWidget {
   const MyAccueil({super.key});
-
   @override
   State<MyAccueil> createState() => _MyAccueilState();
 }
 
 class _MyAccueilState extends State<MyAccueil> {
-  Vol? voyage;
+  Vol voyage = Vol();
   int tabBarIndex = 1;
   Color myColorBlue = Color.fromRGBO(42, 21, 232, 1);
   String departureDate = "Date de départ";
   String ReturnDate = "Date de retour";
+  String str = "";
 
   @override
   void initState() {
-    voyage = Vol(null, null, null, null, null, null, null, null);
+    voyage = Vol();
+    voyage.nbPersonne = 1;
+    voyage.classe = "Economique";
     super.initState();
   }
 
@@ -36,12 +40,13 @@ class _MyAccueilState extends State<MyAccueil> {
     double xHeight = MediaQuery.of(context).size.height;
     double xWidth = MediaQuery.of(context).size.width;
 
-    List<DropdownMenuEntry> dropElements = [
-      DropdownMenuEntry(value: "COO", label: "Cotonou"),
-      DropdownMenuEntry(value: "PAR", label: "Paris"),
-    ];
+    String nbrePersonne = '';
+    nbrePersonne += voyage.nbPersonne!.toString();
+    nbrePersonne += " personne(s), ";
+    nbrePersonne += voyage.classe!;
 
-    String nbrePersonne = "1 personne, Economique";
+    List<DropdownMenuEntry> dropElements = [];
+
     return Scaffold(
       appBar: AppBar(
           elevation: 0,
@@ -60,12 +65,14 @@ class _MyAccueilState extends State<MyAccueil> {
           })),
       drawer: Drawer(child: Icon(Icons.grid_3x3)),
       body: SingleChildScrollView(
-        child: Center(
           child: Container(
-            //height: xHeight / 10,
-            padding: EdgeInsets.all(0.0),
-            alignment: Alignment.center,
-            child: Column(
+        width: double.infinity,
+        //height: xHeight / 10,
+        padding: EdgeInsets.all(0.0),
+
+        child: Column(
+          children: [
+            Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
@@ -96,6 +103,7 @@ class _MyAccueilState extends State<MyAccueil> {
                 ),
                 Container(
                   padding: EdgeInsets.all(0),
+                  margin: EdgeInsets.only(top: 10),
                   height: xHeight / 15,
                   width: xWidth / 1.5,
                   child: Row(
@@ -135,7 +143,7 @@ class _MyAccueilState extends State<MyAccueil> {
                           setState(() {
                             if (tabBarIndex == 0) {
                               tabBarIndex = 1;
-                              ReturnDate = "Date de retour";
+                              voyage.date_retour = null;
                             }
                             //print(tabBarIndex);
                           });
@@ -165,154 +173,251 @@ class _MyAccueilState extends State<MyAccueil> {
                   height: 10.0,
                 ),
                 Form(
-                  child: Column(
-                    children: [
-                      Container(
-                        height: 10.0,
-                      ),
-                      DropdownMenu(
-                        requestFocusOnTap: true,
-                        enableFilter: true,
-                        enableSearch: true,
-                        width: xWidth / 1.5,
-                        label: Text("D'où partez-vous ?"),
-                        controller: DepartureController,
-                        menuHeight: xHeight / 4,
-                        //menuStyle: MenuStyle(),
-                        dropdownMenuEntries: dropElements,
-                        onSelected: (value) {},
-                      ),
-                      Container(
-                        height: 10.0,
-                      ),
-                      DropdownMenu(
-                        requestFocusOnTap: true,
-                        enableFilter: true,
-                        enableSearch: true,
-                        width: xWidth / 1.5,
-                        label: Text("Où allez-vous ?"),
-                        controller: DestinationController,
-                        menuHeight: xHeight / 4,
-                        //menuStyle: MenuStyle(),
-                        dropdownMenuEntries: dropElements,
-                        onSelected: (value) {},
-                      ),
-                      Container(
-                        height: 10.0,
-                      ),
-                      //DatePickerExample(),
-                      InkWell(
-                        onTap: () => showCalendar(0),
-                        child: Container(
-                          padding: EdgeInsets.all(12),
-                          height: xHeight / 11,
-                          width: xWidth / 1.5,
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0))),
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  departureDate,
-                                  style: TextStyle(
-                                      color: Color.fromRGBO(0, 0, 0, 0.6),
-                                      fontWeight: FontWeight.w500),
-                                ),
-                                Icon(
-                                  Icons.calendar_month,
-                                  color: Color.fromRGBO(0, 0, 0, 0.6),
-                                )
-                              ]),
-                        ),
-                      ),
-                      Container(
-                        height: 10.0,
-                      ),
-                      if (tabBarIndex == 1)
-                        InkWell(
-                          onTap: () {
-                            showCalendar(1);
-                          },
-                          child: Container(
-                            padding: EdgeInsets.all(12),
-                            height: xHeight / 11,
-                            width: xWidth / 1.5,
-                            decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey),
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(5.0))),
-                            child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    ReturnDate,
-                                    style: TextStyle(
+                    key: UniqueKey(),
+                    child: Container(
+                      child: Column(children: [
+                        Column(
+                          children: [
+                            BlocBuilder<AppCubit, CubitStates>(
+                                builder: (context, State) {
+                              if (State is loadedState) {
+                                var infos = State.places;
+
+                                for (var x = 0; x < (infos.length / 20); x++) {
+                                  dropElements.add(DropdownMenuEntry(
+                                      value: infos[x].code,
+                                      label: "${infos[x].nom}"));
+                                }
+                              }
+                              return Container();
+                            }),
+                            Container(
+                              height: 10.0,
+                            ),
+                            //Text(str),
+                            DropdownMenu(
+                              requestFocusOnTap: true,
+                              enableFilter: true,
+                              enableSearch: true,
+                              width: xWidth / 1.5,
+                              label: const Text("D'où partez-vous ?"),
+                              controller: DepartureController,
+                              menuHeight: xHeight / 4,
+                              //menuStyle: MenuStyle(),
+                              dropdownMenuEntries: dropElements,
+                              onSelected: (value) {
+                                voyage.lieu_depart = DepartureController.text;
+                              },
+                            ),
+                            Container(
+                              height: 10.0,
+                            ),
+
+                            // Container(
+                            //   padding: EdgeInsets.zero,
+                            //   margin: EdgeInsets.zero,
+                            //   width: xWidth / 1.5,
+                            //   child: CSCPicker(
+                            //       showStates: false,
+                            //       showCities: false,
+                            //       dropdownHeadingStyle:
+                            //           TextStyle(color: Colors.grey),
+                            //       disableCountry: false,
+                            //       dropdownDecoration: BoxDecoration(
+                            //           border: Border.all(color: Colors.grey),
+                            //           borderRadius: BorderRadius.all(
+                            //               Radius.circular(5.0)))),
+                            // ),
+                            Container(
+                              height: 10.0,
+                            ),
+                            DropdownMenu(
+                              requestFocusOnTap: true,
+                              enableFilter: true,
+                              enableSearch: true,
+                              width: xWidth / 1.5,
+                              label: const Text("Où allez-vous ?"),
+                              controller: DestinationController,
+                              menuHeight: xHeight / 4,
+                              //menuStyle: MenuStyle(),
+                              dropdownMenuEntries: dropElements,
+                              onSelected: (value) {
+                                voyage.lieu_arrivee =
+                                    DestinationController.text;
+                              },
+                            ),
+                            Container(
+                              height: 10.0,
+                            ),
+                            //DatePickerExample(),
+                            InkWell(
+                              onTap: () => showCalendar(0),
+                              child: Container(
+                                padding: EdgeInsets.all(12),
+                                height: xHeight / 11,
+                                width: xWidth / 1.5,
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.grey),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0))),
+                                child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        departureDate,
+                                        style: TextStyle(
+                                            color: Color.fromRGBO(0, 0, 0, 0.6),
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      Icon(
+                                        Icons.calendar_month,
                                         color: Color.fromRGBO(0, 0, 0, 0.6),
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                  Icon(
-                                    Icons.calendar_month,
-                                    color: Color.fromRGBO(0, 0, 0, 0.6),
-                                  )
-                                ]),
-                          ),
-                        ),
-                      Container(
-                        height: 15.0,
-                      ),
-                      InkWell(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => SelectOption()));
-                        },
-                        child: Container(
-                          padding: EdgeInsets.all(12),
-                          height: xHeight / 11,
-                          width: xWidth / 1.5,
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(5.0))),
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  nbrePersonne,
-                                  style: TextStyle(
-                                      color: Color.fromRGBO(0, 0, 0, 0.6),
-                                      fontWeight: FontWeight.w500),
+                                      )
+                                    ]),
+                              ),
+                            ),
+                            Container(
+                              height: 10.0,
+                            ),
+                            if (tabBarIndex == 1)
+                              InkWell(
+                                onTap: () {
+                                  showCalendar(1);
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(12),
+                                  height: xHeight / 11,
+                                  width: xWidth / 1.5,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.grey),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(5.0))),
+                                  child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          ReturnDate,
+                                          style: TextStyle(
+                                              color:
+                                                  Color.fromRGBO(0, 0, 0, 0.6),
+                                              fontWeight: FontWeight.w500),
+                                        ),
+                                        Icon(
+                                          Icons.calendar_month,
+                                          color: Color.fromRGBO(0, 0, 0, 0.6),
+                                        )
+                                      ]),
                                 ),
-                                Icon(
-                                  Icons.person,
-                                  color: Color.fromRGBO(0, 0, 0, 0.6),
-                                )
-                              ]),
-                        ),
-                      ),
-                      Container(
-                        height: 10.0,
-                      ),
-                      ElevatedButton(
-                        onPressed: () {},
-                        child: Text("Rechercher un vol"),
-                        style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all(myColorBlue)),
-                      )
-                    ],
-                  ),
-                  key: UniqueKey(),
-                ),
+                              ),
+                            Container(
+                              height: 15.0,
+                            ),
+                            InkWell(
+                              onTap: () async {
+                                var result = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => SelectOption()));
+
+                                setState(() {
+                                  voyage.nbPersonne = result[1];
+                                  if (result[0] == 2) voyage.classe = "Premium";
+                                  if (result[0] == 3)
+                                    voyage.classe = "Business";
+                                });
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(12),
+                                height: xHeight / 11,
+                                width: xWidth / 1.5,
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.grey),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(5.0))),
+                                child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        nbrePersonne,
+                                        style: TextStyle(
+                                            color: Color.fromRGBO(0, 0, 0, 0.6),
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      Icon(
+                                        Icons.person,
+                                        color: Color.fromRGBO(0, 0, 0, 0.6),
+                                      )
+                                    ]),
+                              ),
+                            ),
+                            Container(
+                              height: 10.0,
+                            ),
+                            Container(
+                              height: xHeight / 13,
+                              width: xWidth / 1.5,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  voyage.allerRetour =
+                                      (tabBarIndex == 0) ? false : true;
+                                  BlocProvider.of<AppCubit>(context).getFlight(
+                                      DestinationController.text,
+                                      DepartureController.text,
+                                      "USD",
+                                      "2024-12-13");
+                                },
+                                child: Text("Rechercher un vol",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16)),
+                                style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all(myColorBlue)),
+                              ),
+                            )
+                          ],
+                        )
+                      ]),
+                    )),
               ],
             ),
-          ),
+            SizedBox(
+              height: 10,
+            ),
+            Container(
+              //color: Colors.green,
+              width: xWidth / 1.5,
+              alignment: Alignment.topLeft,
+              margin: EdgeInsets.all(20),
+              child:
+                  Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+                Text(
+                  "Recherches Récentes",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black,
+                    fontSize: 16,
+                  ),
+                  textScaleFactor: 1.5,
+                ),
+              ]),
+            ),
+            //MyArchiveSearch(voyage.lieu_depart, voyage.lieu_arrivee, voyage.),
+            MyArchiveSearch(),
+            MyArchiveSearch(),
+            MyArchiveSearch(),
+            MyArchiveSearch(),
+            MyArchiveSearch(),
+            MyArchiveSearch(),
+            MyArchiveSearch(),
+            MyArchiveSearch(),
+            MyArchiveSearch(),
+          ],
         ),
-      ),
+      )),
       resizeToAvoidBottomInset: false,
     );
   }
@@ -335,8 +440,10 @@ class _MyAccueilState extends State<MyAccueil> {
       setState(() {
         if (key == 1) {
           ReturnDate = "${day.toString()}/${month.toString()}";
+          voyage.date_retour = choix;
         } else {
           departureDate = "${day.toString()}/${month.toString()}";
+          voyage.date_depart = choix;
         }
       });
     }

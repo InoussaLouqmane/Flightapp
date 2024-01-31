@@ -2,8 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class SelectOption extends StatefulWidget {
-  const SelectOption({super.key});
-
+  SelectOption({super.key});
+  
+  
   @override
   State<SelectOption> createState() => _SelectOptionState();
 }
@@ -12,7 +13,7 @@ class _SelectOptionState extends State<SelectOption> {
   List l = ['Economique', 'Premium', 'Business'];
   int? itemSelectionne;
 
-  int counter = 0;
+  int counter = 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,7 +75,7 @@ class _SelectOptionState extends State<SelectOption> {
                                 iconSize: 15.0,
                                 onPressed: () {
                                   setState(() {
-                                    counter--;
+                                    if (counter > 2) counter--;
                                   });
                                 },
                                 icon: Icon(
@@ -160,7 +161,8 @@ class _SelectOptionState extends State<SelectOption> {
                   ),
                   ElevatedButton(
                       onPressed: () {
-                        Navigator.pop(context);
+                        
+                        Navigator.pop(context, [itemSelectionne, counter]);
                       },
                       child: Text("Continuer"),
                       style: ButtonStyle(

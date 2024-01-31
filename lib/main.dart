@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:tp/Subpages/favorite_page.dart';
-import 'package:tp/Subpages/notifications_page.dart';
+import 'package:tp/Subpages/offers.dart';
 import 'package:tp/Subpages/profil_page.dart';
+import 'package:tp/Vol.dart';
 import 'package:tp/accueil.dart';
+import 'package:tp/card_page.dart';
 import 'package:tp/cubit/app_cubit.dart';
 import 'package:tp/cubit/app_cubit_logics.dart';
+import 'package:tp/detail_page.dart';
+import 'package:tp/flight_results.dart';
 import 'package:tp/services/airportdata.dart';
 
 void main() async {
@@ -25,6 +29,7 @@ class MyApp extends StatelessWidget {
         title: "TravelGO",
         home: BlocProvider<AppCubit>(
           create: (context) => AppCubit(
+            flightData: DataServices(),
             data: DataServices(),
           ),
           child: AppCubitLogics(),
@@ -42,12 +47,7 @@ class MyHome extends StatefulWidget {
 }
 
 class _MyHomeState extends State<MyHome> {
-  List page= [
-    MyAccueil(),
-    MyNotifications(),
-    MyFavorite(),
-    MyProfil()
-  ];
+  List page = [MyAccueil(), MyCardPage(), MyFavorite(), MyProfil()];
   int _selectedIndex = 0;
   void _onTapItem(index) {
     setState(() {
@@ -57,11 +57,8 @@ class _MyHomeState extends State<MyHome> {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
-      
       body: page[_selectedIndex],
-
       bottomNavigationBar: BottomNavigationBar(
           type: BottomNavigationBarType.fixed,
           landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
