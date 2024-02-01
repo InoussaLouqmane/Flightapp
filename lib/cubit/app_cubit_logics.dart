@@ -18,7 +18,7 @@ class _AppCubitLogicsState extends State<AppCubitLogics> {
     return Scaffold(
       body: BlocBuilder<AppCubit, CubitStates>(builder: ((context, state) {
         if (state is WelcomeState) {
-          return MyAccueil();
+          return MySplash();
         } else if (state is loadedState) {
           return MyAccueil();
         } else {

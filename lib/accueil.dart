@@ -16,17 +16,10 @@ class MyAccueil extends StatefulWidget {
 
 class _MyAccueilState extends State<MyAccueil> {
   Vol? voyage;
-  int _selectedIndex = 0;
   int tabBarIndex = 1;
   Color myColorBlue = Color.fromRGBO(42, 21, 232, 1);
   String departureDate = "Date de départ";
   String ReturnDate = "Date de retour";
-
-  void _onTapItem(index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
 
   @override
   void initState() {
@@ -320,40 +313,6 @@ class _MyAccueilState extends State<MyAccueil> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
-          backgroundColor: Color.fromRGBO(42, 21, 232, 1),
-          elevation: 0,
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Colors.white,
-          currentIndex: _selectedIndex,
-          onTap: _onTapItem,
-          items: [
-            BottomNavigationBarItem(
-                label: 'Accueil',
-                icon: Icon(
-                    (_selectedIndex == 0) ? Icons.home : Icons.home_outlined),
-                backgroundColor: Color.fromRGBO(42, 21, 232, 1)),
-            BottomNavigationBarItem(
-                label: 'Notifs',
-                icon: Icon((_selectedIndex == 1)
-                    ? Icons.notifications
-                    : Icons.notifications_none),
-                backgroundColor: Color.fromRGBO(42, 21, 232, 1)),
-            BottomNavigationBarItem(
-                label: 'Favoris',
-                icon: Icon((_selectedIndex == 2)
-                    ? Icons.favorite
-                    : Icons.favorite_outline),
-                backgroundColor: Color.fromRGBO(42, 21, 232, 1)),
-            BottomNavigationBarItem(
-                label: 'Profil',
-                icon: Icon((_selectedIndex == 3)
-                    ? Icons.person
-                    : Icons.person_outline),
-                backgroundColor: Color.fromRGBO(42, 21, 232, 1)),
-          ]),
       resizeToAvoidBottomInset: false,
     );
   }

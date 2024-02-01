@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:tp/Subpages/favorite_page.dart';
+import 'package:tp/Subpages/notifications_page.dart';
+import 'package:tp/Subpages/profil_page.dart';
 import 'package:tp/accueil.dart';
 import 'package:tp/cubit/app_cubit.dart';
 import 'package:tp/cubit/app_cubit_logics.dart';
@@ -39,8 +42,60 @@ class MyHome extends StatefulWidget {
 }
 
 class _MyHomeState extends State<MyHome> {
+  List page= [
+    MyAccueil(),
+    MyNotifications(),
+    MyFavorite(),
+    MyProfil()
+  ];
+  int _selectedIndex = 0;
+  void _onTapItem(index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MyAccueil();
+
+    return Scaffold(
+      
+      body: page[_selectedIndex],
+
+      bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          landscapeLayout: BottomNavigationBarLandscapeLayout.centered,
+          backgroundColor: Color.fromRGBO(42, 21, 232, 1),
+          elevation: 0,
+          selectedItemColor: Colors.white,
+          unselectedItemColor: Colors.white,
+          currentIndex: _selectedIndex,
+          onTap: _onTapItem,
+          items: [
+            BottomNavigationBarItem(
+                label: 'Accueil',
+                icon: Icon(
+                    (_selectedIndex == 0) ? Icons.home : Icons.home_outlined),
+                backgroundColor: Color.fromRGBO(42, 21, 232, 1)),
+            BottomNavigationBarItem(
+                label: 'Notifs',
+                icon: Icon((_selectedIndex == 1)
+                    ? Icons.notifications
+                    : Icons.notifications_none),
+                backgroundColor: Color.fromRGBO(42, 21, 232, 1)),
+            BottomNavigationBarItem(
+                label: 'Favoris',
+                icon: Icon((_selectedIndex == 2)
+                    ? Icons.favorite
+                    : Icons.favorite_outline),
+                backgroundColor: Color.fromRGBO(42, 21, 232, 1)),
+            BottomNavigationBarItem(
+                label: 'Profil',
+                icon: Icon((_selectedIndex == 3)
+                    ? Icons.person
+                    : Icons.person_outline),
+                backgroundColor: Color.fromRGBO(42, 21, 232, 1)),
+          ]),
+    );
   }
 }
